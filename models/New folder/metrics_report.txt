@@ -1,0 +1,22 @@
+Hourly AQI prediction metrics
+=============================
+Selected model: RandomForest (depth=None, min_samples_leaf=3)
+Validation MAE: 3.516
+Rows (train/validation/test): 14060/3013/3014
+
+Final test metrics (MAE and RMSE: lower is better; R² is not sufficient alone)
+Persistence: MAE=2.425, RMSE=5.785, R²=0.979
+RandomForest: MAE=2.313, RMSE=5.468, R²=0.981
+ExtraTrees: MAE=2.218, RMSE=5.389, R²=0.981
+Selected: MAE=2.313, RMSE=5.468, R²=0.981
+
+AQI-change diagnostic
+{
+  "test_hours_with_AQI_change": 2031,
+  "test_hours_without_AQI_change": 983,
+  "persistence_MAE_on_change_hours": 3.5982274741506646,
+  "selected_model_MAE_on_change_hours": 2.821015502891941,
+  "persistence_MAE_on_stable_hours": 0.0,
+  "selected_model_MAE_on_stable_hours": 1.2633545788542668,
+  "interpretation": "Persistence is difficult to beat when AQI changes slowly. Compare change-hour errors to see whether the selected model helps during actual AQI changes."
+}

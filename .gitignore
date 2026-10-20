@@ -1,0 +1,22 @@
+
+# Python environment
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE and OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+
+# Temporary files
+*.log

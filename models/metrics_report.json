@@ -1,0 +1,100 @@
+{
+  "input_file": "Data\\air_quality_ml_ready.csv",
+  "target": "AQI at exactly one calendar hour after the forecast origin",
+  "target_note": "Existing provisional AQI; CPCB sub-index calculation has not been independently validated here.",
+  "valid_examples": 20087,
+  "split_rows": {
+    "train": 14060,
+    "validation": 3013,
+    "test": 3014
+  },
+  "split_percentages": {
+    "train": 70,
+    "validation": 15,
+    "test": 15
+  },
+  "selected_model": "RandomForest",
+  "selected_parameters": {
+    "max_depth": null,
+    "min_samples_leaf": 3
+  },
+  "selected_validation_MAE": 3.516316539476068,
+  "test_metrics": {
+    "Persistence": {
+      "MAE": 2.424684804246848,
+      "RMSE": 5.785194934026407,
+      "R2": 0.978505937956223
+    },
+    "RandomForest": {
+      "selected_on_validation": {
+        "max_depth": null,
+        "min_samples_leaf": 3
+      },
+      "MAE": 2.312992713134465,
+      "RMSE": 5.4679240198757215,
+      "R2": 0.9807988409077066
+    },
+    "ExtraTrees": {
+      "selected_on_validation": {
+        "max_depth": 20,
+        "min_samples_leaf": 3
+      },
+      "MAE": 2.217765167836552,
+      "RMSE": 5.388507149319401,
+      "R2": 0.9813525508944138
+    },
+    "Selected": {
+      "MAE": 2.312992713134465,
+      "RMSE": 5.4679240198757215,
+      "R2": 0.9807988409077066
+    }
+  },
+  "test_diagnostics": {
+    "test_hours_with_AQI_change": 2031,
+    "test_hours_without_AQI_change": 983,
+    "persistence_MAE_on_change_hours": 3.5982274741506646,
+    "selected_model_MAE_on_change_hours": 2.8210155028919415,
+    "persistence_MAE_on_stable_hours": 0.0,
+    "selected_model_MAE_on_stable_hours": 1.2633545788542682,
+    "interpretation": "Persistence is difficult to beat when AQI changes slowly. Compare change-hour errors to see whether the selected model helps during actual AQI changes."
+  },
+  "feature_columns": [
+    "AQI",
+    "AQI_lag_1h",
+    "AQI_lag_3h",
+    "AQI_lag_6h",
+    "AQI_lag_24h",
+    "AQI_rolling_3h_mean",
+    "AQI_rolling_3h_std",
+    "AQI_rolling_6h_mean",
+    "AQI_rolling_6h_std",
+    "AQI_rolling_24h_mean",
+    "AQI_rolling_24h_std",
+    "Hour",
+    "DayOfWeek",
+    "Month",
+    "PM2.5 (\u00b5g/m\u00b3)",
+    "PM10 (\u00b5g/m\u00b3)",
+    "NO (\u00b5g/m\u00b3)",
+    "NO2 (\u00b5g/m\u00b3)",
+    "NOx (ppb)",
+    "NH3 (\u00b5g/m\u00b3)",
+    "SO2 (\u00b5g/m\u00b3)",
+    "CO (mg/m\u00b3)",
+    "Ozone (\u00b5g/m\u00b3)",
+    "Benzene (\u00b5g/m\u00b3)",
+    "Toluene (\u00b5g/m\u00b3)",
+    "Xylene (\u00b5g/m\u00b3)",
+    "Eth-Benzene (\u00b5g/m\u00b3)",
+    "MP-Xylene (\u00b5g/m\u00b3)",
+    "AT (\u00b0C)",
+    "RH (%)",
+    "WS (m/s)",
+    "WD (deg)",
+    "RF (mm)",
+    "TOT-RF (mm)",
+    "BP (mmHg)"
+  ],
+  "preprocessing": "Median imputer is part of each model pipeline and is fit only on the chronological training partition.",
+  "selection_rule": "Lowest validation MAE among the tested Random Forest and Extra Trees settings."
+}
