@@ -2,6 +2,8 @@
 
 This student project uses hourly CPCB measurements for Chandni Chowk, Delhi, to estimate AQI one calendar hour ahead. It compares machine learning with a persistence baseline, which assumes the next hour's AQI will equal the current hour's AQI.
 
+This is a group project developed collaboratively.
+
 The `AQI` column is treated as the project's existing provisional target. Its calculation has not been independently validated against every official CPCB sub-index rule, and this workflow does not recalculate it.
 
 ## Data
