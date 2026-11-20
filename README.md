@@ -60,6 +60,19 @@ The project uses pandas, NumPy, scikit-learn, matplotlib, and joblib. If an impo
 python -m pip install pandas numpy scikit-learn matplotlib joblib
 ```
 
+## Interactive dashboard
+
+The Streamlit dashboard shows the saved test results, model comparison, and a one-hour-ahead demonstration using the latest timestamp in the project data. It is not a live CPCB feed.
+
+Install the dashboard and model dependencies, then run:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m streamlit run app.py
+```
+
+To publish a public version, deploy `app.py` from this public GitHub repository using [Streamlit Community Cloud](https://share.streamlit.io/). Select the repository, the `main` branch, and `app.py` as the app file. In Advanced settings, select Python 3.14 to match the saved model environment. Once deployment finishes, Streamlit provides the shareable `streamlit.app` link.
+
 ## Generated outputs
 
 Running `train_model.py` writes the following files under `models/`:
