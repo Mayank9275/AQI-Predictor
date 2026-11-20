@@ -9,6 +9,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pydeck as pdk
 import streamlit as st
 
 
@@ -156,6 +157,65 @@ def draw_prediction_chart(predictions: pd.DataFrame, points: int) -> plt.Figure:
     return fig
 
 
+def draw_india_map() -> pdk.Deck:
+    """Show the CPCB/DPCC station location in its India-wide context."""
+    station = pd.DataFrame({
+        "longitude": [77.2272],
+        "latitude": [28.6568],
+        "label": ["Chandni Chowk · Delhi"],
+    })
+    layers = [
+        pdk.Layer(
+            "ScatterplotLayer",
+            data=station,
+            get_position="[longitude, latitude]",
+            get_radius=26000,
+            radius_min_pixels=7,
+            get_fill_color=[197, 150, 67, 105],
+            get_line_color=[197, 150, 67, 220],
+            line_width_min_pixels=2,
+            stroked=True,
+            filled=True,
+            pickable=True,
+        ),
+        pdk.Layer(
+            "ScatterplotLayer",
+            data=station,
+            get_position="[longitude, latitude]",
+            get_radius=8000,
+            radius_min_pixels=4,
+            get_fill_color=[180, 84, 59, 255],
+            get_line_color=[251, 248, 241, 255],
+            line_width_min_pixels=2,
+            stroked=True,
+            filled=True,
+            pickable=True,
+        ),
+        pdk.Layer(
+            "TextLayer",
+            data=station,
+            get_position="[longitude, latitude]",
+            get_text="label",
+            get_size=16,
+            get_color=[41, 40, 32, 255],
+            get_pixel_offset=[18, -12],
+            pickable=False,
+        ),
+    ]
+    return pdk.Deck(
+        layers=layers,
+        initial_view_state=pdk.ViewState(
+            latitude=21.5,
+            longitude=82.0,
+            zoom=2.95,
+            pitch=0,
+            bearing=0,
+        ),
+        map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+        tooltip={"text": "{label}\n{latitude}° N, {longitude}° E"},
+    )
+
+
 if not all(path.exists() for path in (DATA_PATH, MODEL_PATH, PREDICTIONS_PATH, REPORT_PATH)):
     st.error("A required project data or model file is missing. Keep app.py, Data/, and models/ together.")
     st.stop()
@@ -179,7 +239,7 @@ et_metrics = test_metrics["ExtraTrees"]
 baseline_metrics = test_metrics["Persistence"]
 test_accuracy = float(np.mean(np.abs(predictions["Actual_AQI"] - predictions["Predicted_AQI"]) <= 5) * 100)
 
-st.markdown('<div class="eyebrow">A student project · Chandni Chowk, Delhi</div>', unsafe_allow_html=True)
+st.markdown('<div class="eyebrow">A student project · Chandni Chowk, Delhi, India</div>', unsafe_allow_html=True)
 st.title("AQI, one hour ahead.")
 st.markdown(
     '<p class="lede">A small look at what hourly pollution readings can tell us about the next hour. '
@@ -188,7 +248,7 @@ st.markdown(
 )
 st.markdown("<hr>", unsafe_allow_html=True)
 
-left, right = st.columns([1.05, 1], gap="large")
+left, right = st.columns([1.0, 1.0], gap="large")
 with left:
     st.markdown("### A forecast from the latest project reading")
     metric_cols = st.columns(2)
@@ -196,18 +256,23 @@ with left:
     metric_cols[1].metric("Model estimate · next hour", f"{forecast_aqi:.1f}", f"{forecast_aqi - latest_aqi:+.1f} from current")
     st.caption(f"Forecast origin: {latest_time:%d %b %Y, %H:%M} · target hour: {(latest_time + pd.Timedelta(hours=1)):%d %b %Y, %H:%M}")
 with right:
-    st.markdown("### How it did on held-out hours")
-    score_cols = st.columns(3)
-    score_cols[0].metric("Random Forest · MAE", f"{rf_metrics['MAE']:.3f}")
-    score_cols[1].metric("Within ±5 AQI points", f"{test_accuracy:.1f}%")
-    score_cols[2].metric("Persistence · MAE", f"{baseline_metrics['MAE']:.3f}")
-    st.caption("Test set: later timestamps kept out of model fitting and selection.")
+    st.markdown("### The monitoring site")
+    st.pydeck_chart(draw_india_map(), height=315, width="stretch")
+    st.caption("India → Delhi → Chandni Chowk · CPCB / DPCC monitoring station")
+    st.markdown("[View station details and coordinates ↗](https://aqi.delhi.gov.in/stations/chandni-chowk)")
 
 st.markdown(
     f'<div class="note">This is a demonstration using the project’s latest available row, '
     f'<b>{latest_time:%d %b %Y}</b>. It is not a live CPCB reading or a current AQI alert.</div>',
     unsafe_allow_html=True,
 )
+
+st.markdown("### Test-set snapshot")
+score_cols = st.columns(3)
+score_cols[0].metric("Random Forest · MAE", f"{rf_metrics['MAE']:.3f}")
+score_cols[1].metric("Within ±5 AQI points", f"{test_accuracy:.1f}%")
+score_cols[2].metric("Persistence · MAE", f"{baseline_metrics['MAE']:.3f}")
+st.caption("Test set: later timestamps kept out of model fitting and selection.")
 
 overview, results_tab, method_tab = st.tabs(["Explore the results", "How the models compare", "How it works"])
 
@@ -247,4 +312,4 @@ with method_tab:
     st.write("The existing AQI labels are provisional and have not been independently checked against every CPCB sub-index rule. This project is an educational prediction demo, not health guidance.")
 
 st.markdown("<hr>", unsafe_allow_html=True)
-st.caption("Built for an academic AQI prediction project · Data: CPCB hourly measurements, Chandni Chowk, Delhi")
+st.caption("Built for an academic AQI prediction project · Data: CPCB hourly measurements, Chandni Chowk, Delhi, India")

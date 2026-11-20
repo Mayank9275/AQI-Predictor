@@ -62,7 +62,7 @@ python -m pip install pandas numpy scikit-learn matplotlib joblib
 
 ## Interactive dashboard
 
-The Streamlit dashboard shows the saved test results, model comparison, and a one-hour-ahead demonstration using the latest timestamp in the project data. It is not a live CPCB feed.
+The Streamlit dashboard shows the saved test results, model comparison, and a one-hour-ahead demonstration using the latest timestamp in the project data. An India map marks the Chandni Chowk monitoring station in Delhi. The forecast is not a live CPCB feed.
 
 Install the dashboard and model dependencies, then run:
 
